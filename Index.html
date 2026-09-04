@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNU Network - Cloud Mining</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            user-select: none;
+        }
+        body {
+            background-color: #0b0612;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .logo-container {
+            width: 130px;
+            height: 130px;
+            margin: 20px auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(255, 0, 128, 0.2) 0%, rgba(11, 6, 18, 0) 70%);
+            box-shadow: 0 0 25px rgba(255, 0, 128, 0.4);
+            border: 2px solid #ff007f;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        .logo-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 0, 128, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 35px rgba(255, 0, 128, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 0, 128, 0.4); }
+        }
+        .balance-card {
+            background: #170d24;
+            border: 1px solid #ff007f33;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 360px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .balance-title {
+            font-size: 14px;
+            color: #a0a0a0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .balance-val {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff007f;
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(255, 0, 128, 0.5);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #bbb;
+        }
+        .stat-box {
+            background: #231438;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .actions {
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn {
+            background: linear-gradient(90deg, #ff007f, #aa00ff);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 0, 128, 0.3);
+            transition: 0.2s;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-secondary {
+            background: #231438;
+            border: 1px solid #ff007f66;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2 style="letter-spacing: 1px;">PNU NETWORK</h2>
+        <p style="font-size: 12px; color: #888;">Decentralized Mobile Mining</p>
+    </div>
+
+    <div class="logo-container">
+        <!-- आपका लोगो -->
+        <img src="https://ibb.co" alt="PNU" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://w3.org\' viewBox=\'0 0 100 100\'><polygon points=\'50 5, 90 27, 90 72, 50 95, 10 72, 10 27\' stroke=\'%23ff007f\' stroke-width=\'4\' fill=\'none\'/><text x=\'50\' y=\'58\' font-size=\'18\' font-weight=\'bold\' fill=\'%23fff\' text-anchor=\'middle\'>PNU</text></svg>'">
+    </div>
+
+    <div class="balance-card">
+        <div class="balance-title">Mined Balance</div>
+        <div class="balance-val" id="userBalance">0.000000</div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div>Mining Speed</div>
+                <strong id="miningSpeed" style="color: #00ffcc;">130 GH/s</strong>
+            </div>
+            <div class="stat-box">
+                <div>Max Supply</div>
+                <strong>100 Crore</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <!-- Boost Speed Button (Ad Click) -->
+        <button class="btn" onclick="boostSpeed()">
+            ⚡ Boost Mining Speed (+2X)
+        </button>
+
+        <!-- Share Invite Button (Fixed Telegram Share) -->
+        <button class="btn btn-secondary" onclick="shareInvite()">
+            👥 Invite Friends (+50 PNU)
+        </button>
+    </div>
+
+    <script>
+        // Balance Counter Setup
+        let balance = parseFloat(localStorage.getItem('pnu_balance')) || 0.000282;
+        let speedMultiplier = 1;
+        const balanceEl = document.getElementById('userBalance');
+
+        // Mining Speed Update Loop
+        setInterval(() => {
+            balance += 0.000003 * speedMultiplier;
+            balanceEl.innerText = balance.toFixed(6);
+            localStorage.setItem('pnu_balance', balance);
+        }, 1000);
+
+        // Monetag / Ad Link Function
+        function boostSpeed() {
+            // आपका ऐड नेटवर्क डायरेक्ट लिंक
+            const adUrl = "https://omg10.com"; 
+            window.open(adUrl, '_blank');
+
+            // 15 सेकंड बाद स्पीड बूस्ट एक्टिवेट
+            setTimeout(() => {
+                speedMultiplier = 2;
+                document.getElementById('miningSpeed').innerText = "260 GH/s (Boosted)";
+                alert("🎉 Speed Boost Activated for 1 Hour!");
+            }, 3000);
+        }
+
+        // Fixed Telegram Share Function
+        function shareInvite() {
+            const botUrl = "https://t.me" + encodeURIComponent("https://t.me") + "&text=" + encodeURIComponent("🚀 Start mining free PNU tokens today! Join PNU Network now.");
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.openTelegramLink(botUrl);
+            } else {
+                window.open(botUrl, '_blank');
+            }
+        }
+
+        // Telegram WebApp Expand
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.expand();
+        }
+    </script>
+</body>
+</html>
